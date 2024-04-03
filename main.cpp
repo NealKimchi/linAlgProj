@@ -12,7 +12,8 @@ void parse_input(string in, int m, int n){
         x(3,3) = 1 2 3 4 5 6 7 8 9 (alt form)
     Not sure if variable assignment is necessary in current program iteration.
     -> Could use variable assignment as a key:val pair in a dictionary 
-    Will first do this as the alternate form, as in the long run I believe it will be easier
+    Will first do this as the alternate form, as in the long run I believe it 
+    will be easier
 */  
     int length = in.length();
     cout << length << " is the length\n";
@@ -22,25 +23,23 @@ void parse_input(string in, int m, int n){
     };
 
     /*
-        Idea here is that because we know the dimensions of the matrix, we can directly 
-        create the matrix, rather than iterate twice through the string.
+        Idea here is that because we know the dimensions of the matrix, we can 
+        directly create the matrix, rather than iterate twice through the string
     */
-    // int matrix[m*n];
     int matrix[m][n];
     int acc = 0, index = 0, rindex = 0, cindex = 0;
     
     for(int i = 0; i < length; i++){
-        if(isdigit(in[i])){
-            cout << in[i] << " is a digit\n";
-            acc = (acc * 10) + (in[i] - '0');
+        if(isdigit(in[i])){                         //Checks if char is an int
+            acc = (acc * 10) + (in[i] - '0');       //adds digit to accumulator
 
-            if(i == length -1){
-                matrix[m][n] = acc;
+            if(i == length -1){                     //if last digit add to arr
+                matrix[m-1][n-1] = acc;
             }
-        } else if (in[i] == ' '){
-            matrix[rindex][cindex] = acc;
-            acc = 0;
-            if(cindex == n - 1){
+        } else if (in[i] == ' '){                   //if space, number seperator
+            matrix[rindex][cindex] = acc;           
+            acc = 0;                                //reset acc and add to arr
+            if(cindex == n - 1){                    //end of row, reset to new
                 rindex += 1;
                 cindex = 0;
             }else{
@@ -48,40 +47,12 @@ void parse_input(string in, int m, int n){
             }
         }
     }
-
-    for(int i = 0; i < m; i++){
-        for(int j = 0; j < n; j++){
-            cout << matrix[i][j] << ' ';
-        }
-    }
-    
-    // for(int i = 0; i < length; i++){
-    //     if(isdigit(in[i])){
-    //         cout << in[i] << " is a digit\n";
-    //         acc = (acc * 10) + (in[i] - '0');
-
-    //         if(i == length -1){
-    //             matrix[index] = acc;
-    //         }
-    //     } else if (in[i] == ' '){
-    //         matrix[index] = acc;
-    //         // cout << matrix[index] << ' ';
-    //         acc = 0;
-    //         index += 1;
-    //     }
-    // }
-
-    // for(int x = 0; x < m*n; x++){
-    //     cout << matrix[x] << ' ';
-    // }
-    
 }
 
 int main(){
     string input;
     int m;
     int n;
-    // // int out[] = {1,2,3,4,5};
 
     cout << "Enter the number of rows(m): ";
     cin>> m;
@@ -91,15 +62,7 @@ int main(){
     fflush(stdin);                              //----->
     cout << "Please enter a matrix: ";
     getline(cin, input);
-    
-    // cout << input.length() << '\n';
-    // // cout << *out;
     parse_input(input, m, n);
-
-    // int row[5] = {0,1,3,5,6};
-    // int *rwptr = row;
-    // cout << *(rwptr + 2);
-
 
     return 0;
 }
