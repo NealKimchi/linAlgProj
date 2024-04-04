@@ -1,32 +1,58 @@
 #include <iostream>
+#include <string>
 #include <cctype>
 using namespace std;
 
+
+void print_matrix(int** matrix,int m,int n){
+    string output = "";
+    cout << "{";
+    for(int x = 0; x < m; x++){
+            for(int y = 0; y < n; y++){
+                if(y == 0){
+                    cout << "{" << matrix[x][y] << ", ";
+                } 
+                else if (y == m-1){
+                    cout << matrix[x][y] << "},\n";
+                }
+                else{
+                    cout << matrix[x][y] << ", ";
+                }
+            }
+        }
+    cout << "}";
+}
+
+void free_matrix(int** matrix, int m) {
+    // Free each row first
+    for (int i = 0; i < m; i++) {
+        delete[] matrix[i];
+    }
+    // Free the array of pointers
+    delete[] matrix;
+}
 
 void parse_input(string in, int m, int n){
 /**
  * This function will be called to read user input for a matrix/vector
     Would like user input to look as such:
         MATRIX (3x3 example):
-        x = [1,2,3;4,5,6;,7,8,9] (base form)
-        x(3,3) = 1 2 3 4 5 6 7 8 9 (alt form)
+        enter rows: 3
+        enter cols: 3
+        enter matrix: x = 1 2 3 4 5 6 7 8 9
     Not sure if variable assignment is necessary in current program iteration.
     -> Could use variable assignment as a key:val pair in a dictionary 
-    Will first do this as the alternate form, as in the long run I believe it 
-    will be easier
 */  
     int length = in.length();
-    cout << length << " is the length\n";
-    if(length < 7){
-        cout << "input is invalid";
-        return;
-    };
-
     /*
         Idea here is that because we know the dimensions of the matrix, we can 
-        directly create the matrix, rather than iterate twice through the string
+        directly create the 2D array, rather than iterate twice through the string
     */
-    int matrix[m][n];
+    int** matrix = new int*[m];
+    for (int i = 0; i < m; i++) {
+        matrix[i] = new int[n];
+    }
+
     int acc = 0, index = 0, rindex = 0, cindex = 0;
     
     for(int i = 0; i < length; i++){
@@ -47,6 +73,9 @@ void parse_input(string in, int m, int n){
             }
         }
     }
+
+    print_matrix(matrix, m, n);
+    free_matrix(matrix, m);
 }
 
 int main(){
