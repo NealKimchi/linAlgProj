@@ -5,22 +5,12 @@ using namespace std;
 
 
 void print_matrix(int** matrix,int m,int n){
-    string output = "";
-    cout << "{";
-    for(int x = 0; x < m; x++){
-            for(int y = 0; y < n; y++){
-                if(y == 0){
-                    cout << "{" << matrix[x][y] << ", ";
-                } 
-                else if (y == m-1){
-                    cout << matrix[x][y] << "},\n";
-                }
-                else{
-                    cout << matrix[x][y] << ", ";
-                }
-            }
+    for (int i = 0; i < m; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cout << matrix[i][j] << " ";
         }
-    cout << "}";
+        cout << endl;
+    }
 }
 
 void free_matrix(int** matrix, int m) {
