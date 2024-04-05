@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cctype>
+#include <map>
 using namespace std;
 
 
@@ -22,7 +23,7 @@ void free_matrix(int** matrix, int m) {
     delete[] matrix;
 }
 
-void parse_input(string in, int m, int n){
+int** parse_input(string in, int m, int n){
 /**
  * This function will be called to read user input for a matrix/vector
     Would like user input to look as such:
@@ -30,14 +31,10 @@ void parse_input(string in, int m, int n){
         enter rows: 3
         enter cols: 3
         enter matrix: x = 1 2 3 4 5 6 7 8 9
-    Not sure if variable assignment is necessary in current program iteration.
-    -> Could use variable assignment as a key:val pair in a dictionary 
+    Also asks user for name for the matrix, which is used as a key value pair
+    in a dictionary.
 */  
     int length = in.length();
-    /*
-        Idea here is that because we know the dimensions of the matrix, we can 
-        directly create the 2D array, rather than iterate twice through the string
-    */
     int** matrix = new int*[m];
     for (int i = 0; i < m; i++) {
         matrix[i] = new int[n];
@@ -64,15 +61,20 @@ void parse_input(string in, int m, int n){
         }
     }
 
-    print_matrix(matrix, m, n);
-    free_matrix(matrix, m);
+    // print_matrix(matrix, m, n);
+    return matrix;
+    // free_matrix(matrix, m);
 }
 
 int main(){
     string input;
+    map <string, int**> matrices;
     int m;
     int n;
+    string name;
 
+    cout << "Enter a name for the matrix: ";
+    cin >> name;
     cout << "Enter the number of rows(m): ";
     cin>> m;
     cout << "Enter the number of cols(n): ";
@@ -81,7 +83,13 @@ int main(){
     fflush(stdin);                              //----->
     cout << "Please enter a matrix: ";
     getline(cin, input);
-    parse_input(input, m, n);
+
+    int** matrix1 = parse_input(input, m, n);
+    matrices[name] = matrix1;
+    print_matrix(matrices[name], m, n);
+    free_matrix(matrices[name], m);
+
+    // fscanf(stdin, "c"); //Used for debugging with leaks.
 
     return 0;
 }
