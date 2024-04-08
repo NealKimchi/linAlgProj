@@ -2,10 +2,11 @@
 #include <string>
 #include <cctype>
 #include <map>
+#include <cmath>
 using namespace std;
 
 
-void print_matrix(int** matrix,int m,int n){
+void print_matrix(float** matrix,int m,int n){
     for (int i = 0; i < m; ++i) {
         for (int j = 0; j < n; ++j) {
             cout << matrix[i][j] << " ";
@@ -14,7 +15,7 @@ void print_matrix(int** matrix,int m,int n){
     }
 }
 
-void free_matrix(int** matrix, int m) {
+void free_matrix(float** matrix, int m) {
     // Free each row first
     for (int i = 0; i < m; i++) {
         delete[] matrix[i];
@@ -23,7 +24,7 @@ void free_matrix(int** matrix, int m) {
     delete[] matrix;
 }
 
-int** parse_input(string in, int m, int n){
+float** parse_input(string in, int m, int n){
 /**
  * This function will be called to read user input for a matrix/vector
     Would like user input to look as such:
@@ -35,23 +36,36 @@ int** parse_input(string in, int m, int n){
     in a dictionary.
 */  
     int length = in.length();
-    int** matrix = new int*[m];
+    float** matrix = new float*[m];
     for (int i = 0; i < m; i++) {
-        matrix[i] = new int[n];
+        matrix[i] = new float[n];
     }
 
-    int acc = 0, index = 0, rindex = 0, cindex = 0;
+    int index = 0, rindex = 0, cindex = 0, decVal = 1, isDec = 0; 
+    float decAcc = 0, acc = 0;
     
     for(int i = 0; i < length; i++){
-        if(isdigit(in[i])){                         //Checks if char is an int
-            acc = (acc * 10) + (in[i] - '0');       //adds digit to accumulator
-
-            if(i == length -1){                     //if last digit add to arr
-                matrix[m-1][n-1] = acc;
+        if(isdigit(in[i]) || in[i] == '.'){   
+            if(in[i] == '.'){
+                isDec = 1;
+            }
+            if(isDec && in[i] != '.'){
+                float digit = (in[i] - '0') / pow(10, decVal);
+                decAcc = decAcc + digit;
+                decVal++;
+            }                     
+            if(in[i] != '.' && !isDec){
+                acc = (acc * 10) + (in[i] - '0');       
+            }    
+            if(i == length -1){                    
+                matrix[m-1][n-1] = acc + decAcc;
             }
         } else if (in[i] == ' '){                   //if space, number seperator
-            matrix[rindex][cindex] = acc;           
-            acc = 0;                                //reset acc and add to arr
+            matrix[rindex][cindex] = acc + decAcc;           
+            acc = 0;    
+            isDec = 0; 
+            decAcc = 0; 
+            decVal = 1;                          //reset acc and add to arr
             if(cindex == n - 1){                    //end of row, reset to new
                 rindex += 1;
                 cindex = 0;
@@ -66,9 +80,54 @@ int** parse_input(string in, int m, int n){
     // free_matrix(matrix, m);
 }
 
+void swap_row(float** matrix, int swap, int pivot, int n){
+    /**
+     * done with a temporary int, that holds the value from one array.
+    */
+   int temp;
+   for(int i = 0; i < n; i++){
+        temp = matrix[pivot][i];
+        matrix[pivot][i] = matrix[swap][i];
+        matrix[swap][i] = temp;
+   }
+}
+
+void div_row(float** matrix, int row, int scalar, int n){
+    for(int i = 0; i < n; i++){
+        matrix[row][i] = matrix[row][i] / scalar;
+    }
+}
+
+void row_reduction(float **matrix, int m, int n){
+    /**
+     * Row reduction algorithm:
+     *  1) Iterate through columns -- row-wise (look at 1 column at a time)
+     *  2) Iterate through the column -- column-wise
+     *      2a) Search through until a non-zero number is found
+     *      2b) Swap that row with pivot row
+     *  3) Divide the entire row by pivot value
+     *  4) Subract row from every other row in matrix
+     *  5) Go to next column, repeat from step 1
+     * Helper Functions: swap_row(), subtract_row(), scale_row()
+    */
+   int pivot_row = 0;
+   int i = 0;
+   int j = 0;
+
+   for(i = 0; i < n; i++){
+        for(j = 0; j < m; j++){
+            if(matrix[j][i] != 0){
+                swap_row(matrix, j, pivot_row, n);
+                break;
+            }
+        }
+        div_row(matrix, pivot_row, matrix[pivot_row][j], n);        
+   }
+}
+
 int main(){
     string input;
-    map <string, int**> matrices;
+    map <string, float**> matrices;
     int m;
     int n;
     string name;
@@ -84,9 +143,14 @@ int main(){
     cout << "Please enter a matrix: ";
     getline(cin, input);
 
-    int** matrix1 = parse_input(input, m, n);
+    float** matrix1 = parse_input(input, m, n);
     matrices[name] = matrix1;
     print_matrix(matrices[name], m, n);
+    swap_row(matrix1, 1, 2, n);
+    cout << "\n";
+    print_matrix(matrices[name], m, n);
+    // div_row(matrix1, 0, 5,n);
+    // print_matrix(matrices[name], m, n);
     free_matrix(matrices[name], m);
 
     // fscanf(stdin, "c"); //Used for debugging with leaks.
