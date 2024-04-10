@@ -24,7 +24,7 @@ void print_col(float** matrix, int m, int n){
         }
         cout << matrix[i][n] << ", ";
     }
-    cout << ']';
+    cout << ']' << endl;
 }
 
 void print_row(float** matrix, int m, int n){
@@ -36,7 +36,11 @@ void print_row(float** matrix, int m, int n){
         }
         cout << matrix[m][i] << ", ";
     }
-    cout << ']';
+    cout << ']' << endl;
+}
+
+void print_entry(float** matrix, int m, int n){
+    cout << matrix[m][n] << endl;
 }
 
 void free_matrix(float** matrix, int m) {
@@ -172,6 +176,7 @@ void row_reduction(float **matrix, int m, int n){
             }
             else{
                 swap_row(matrix, j, pvtRow, n);
+                scale_row(matrix, j, 1/matrix[j][i], n);
                 eliminate_nonpivots(matrix, i, j, m, n);
                 pvtRow++;
                 pvtCol++;
