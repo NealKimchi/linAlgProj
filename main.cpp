@@ -15,6 +15,30 @@ void print_matrix(float** matrix,int m,int n){
     }
 }
 
+void print_col(float** matrix, int m, int n){
+    cout << '[';
+    for (int i = 0; i < m; ++i) {
+        if(i == m-1){
+            cout << matrix[i][n];
+            break;
+        }
+        cout << matrix[i][n] << ", ";
+    }
+    cout << ']';
+}
+
+void print_row(float** matrix, int m, int n){
+    cout << '[';
+    for (int i = 0; i < n; ++i) {
+        if(i == n-1){
+            cout << matrix[m][i];
+            break;
+        }
+        cout << matrix[m][i] << ", ";
+    }
+    cout << ']';
+}
+
 void free_matrix(float** matrix, int m) {
     // Free each row first
     for (int i = 0; i < m; i++) {
@@ -92,10 +116,37 @@ void swap_row(float** matrix, int swap, int pivot, int n){
    }
 }
 
-void div_row(float** matrix, int row, int scalar, int n){
+void scale_row(float** matrix, int row, double scalar, int n){
+    /**
+     * Args:
+     *  - matrix, row (index), scalar, n (cols)
+     * scales the row by the scalar.
+     * If want to divide row, the scalar should be put 
+    */
     for(int i = 0; i < n; i++){
-        matrix[row][i] = matrix[row][i] / scalar;
+        matrix[row][i] = matrix[row][i] * scalar;
     }
+}
+
+void eliminate_nonpivots(float **matrix, int pivCol, int pivRow, int m, int n){
+    /**
+     * Iterates through the rows below the pivot position and eliminates the
+     * values underneath.
+    */
+   float *pvtRow = matrix[pivRow];
+   float scalar = 1;
+   for(int i = pivRow+1; i < m; i++){
+        for(int j = pivCol; j < n; j++){
+            if(j == pivCol){
+                scalar = matrix[i][j];
+                scale_row(matrix, pivRow, scalar, n);
+            }
+            matrix[i][j] = matrix[i][j] - pvtRow[j];
+            if(j == n - 1){
+                scale_row(matrix, pivRow, 1/scalar, n);
+            }
+        }
+   }
 }
 
 void row_reduction(float **matrix, int m, int n){
@@ -110,18 +161,23 @@ void row_reduction(float **matrix, int m, int n){
      *  5) Go to next column, repeat from step 1
      * Helper Functions: swap_row(), subtract_row(), scale_row()
     */
-   int pivot_row = 0;
+   int pvtRow = 0;
+   int pvtCol = 0;
    int i = 0;
    int j = 0;
 
-   for(i = 0; i < n; i++){
-        for(j = 0; j < m; j++){
-            if(matrix[j][i] != 0){
-                swap_row(matrix, j, pivot_row, n);
+   for(i = pvtCol; i < n; i++){
+        for(j = pvtRow; j < m; j++){
+            if(matrix[j][i] == 0){
+            }
+            else{
+                swap_row(matrix, j, pvtRow, n);
+                eliminate_nonpivots(matrix, i, j, m, n);
+                pvtRow++;
+                pvtCol++;
                 break;
             }
-        }
-        div_row(matrix, pivot_row, matrix[pivot_row][j], n);        
+        }   
    }
 }
 
@@ -146,11 +202,14 @@ int main(){
     float** matrix1 = parse_input(input, m, n);
     matrices[name] = matrix1;
     print_matrix(matrices[name], m, n);
-    swap_row(matrix1, 1, 2, n);
     cout << "\n";
-    print_matrix(matrices[name], m, n);
-    // div_row(matrix1, 0, 5,n);
+
+    // swap_row(matrix1, 1, 2, n);
     // print_matrix(matrices[name], m, n);
+    // scale_row(matrix1, 0, 0.1,n);
+    // eliminate_nonpivots(matrices[name], 0,0,m,n);
+    row_reduction(matrices[name], m, n);
+    print_matrix(matrices[name], m, n);
     free_matrix(matrices[name], m);
 
     // fscanf(stdin, "c"); //Used for debugging with leaks.
