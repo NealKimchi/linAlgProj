@@ -112,7 +112,7 @@ void swap_row(float** matrix, int swap, int pivot, int n){
     /**
      * done with a temporary int, that holds the value from one array.
     */
-   int temp;
+   float temp;
    for(int i = 0; i < n; i++){
         temp = matrix[pivot][i];
         matrix[pivot][i] = matrix[swap][i];
