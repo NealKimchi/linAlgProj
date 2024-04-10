@@ -143,7 +143,9 @@ void eliminate_nonpivots(float **matrix, int pivCol, int pivRow, int m, int n){
         for(int j = pivCol; j < n; j++){
             if(j == pivCol){
                 scalar = abs(matrix[i][j]);
-                scale_row(matrix, pivRow, abs(1/pvtRow[j]), n);
+                if(scalar != 0){
+                    scale_row(matrix, pivRow, abs(1/pvtRow[j]), n);
+                }
                 scale_row(matrix, pivRow, scalar, n);
             }
             matrix[i][j] = matrix[i][j] - pvtRow[j];
@@ -181,12 +183,6 @@ void row_reduction(float **matrix, int m, int n){
             }
             else{
                 swap_row(matrix, j, pvtRow, n);
-                // if(matrix[j][i] == 0){
-                //     scale_row(matrix, j, matrix[j][i], n);
-                // }
-                // else{
-                //     scale_row(matrix, j, 1/matrix[j][i], n);
-                // }
                 eliminate_nonpivots(matrix, i, pvtRow, m, n);
                 pvtRow++;
                 pvtCol++;
