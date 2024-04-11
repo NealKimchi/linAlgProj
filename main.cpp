@@ -69,31 +69,43 @@ float** parse_input(string in, int m, int n){
         matrix[i] = new float[n];
     }
 
-    int index = 0, rindex = 0, cindex = 0, decVal = 1, isDec = 0; 
+    int index = 0, rindex = 0, cindex = 0, decVal = 1, isDec = 0, isNeg = 0; 
     float decAcc = 0, acc = 0;
     
     for(int i = 0; i < length; i++){
-        if(isdigit(in[i]) || in[i] == '.'){   
+        if(isdigit(in[i]) || in[i] == '.' || in[i] == '-'){   
             if(in[i] == '.'){
                 isDec = 1;
+            }
+            if(in[i] == '-'){
+                isNeg = 1;
             }
             if(isDec && in[i] != '.'){
                 float digit = (in[i] - '0') / pow(10, decVal);
                 decAcc = decAcc + digit;
                 decVal++;
             }                     
-            if(in[i] != '.' && !isDec){
+            if(in[i] != '.' && !isDec && in[i] != '-'){
                 acc = (acc * 10) + (in[i] - '0');       
-            }    
-            if(i == length -1){                    
-                matrix[m-1][n-1] = acc + decAcc;
+            }   
+            if(i == length -1){   
+                if(isNeg){
+                    matrix[m-1][n-1] = -1 * (acc + decAcc);
+                } else {
+                    matrix[m-1][n-1] = acc + decAcc;
+                }
             }
-        } else if (in[i] == ' '){                   //if space, number seperator
-            matrix[rindex][cindex] = acc + decAcc;           
+        } else if (in[i] == ' '){
+            if(isNeg){
+                matrix[rindex][cindex] = -1 * (acc + decAcc);
+            } else {
+                matrix[rindex][cindex] = acc + decAcc;           
+            }
             acc = 0;    
             isDec = 0; 
             decAcc = 0; 
-            decVal = 1;                          //reset acc and add to arr
+            decVal = 1;  
+            isNeg = 0;                        //reset acc and add to arr
             if(cindex == n - 1){                    //end of row, reset to new
                 rindex += 1;
                 cindex = 0;
