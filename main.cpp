@@ -5,8 +5,27 @@
 #include <cmath>
 using namespace std;
 
+class UserMatrix{
+    float** matrix;
+    int m;
+    int n;
 
-void print_matrix(float** matrix,int m,int n){
+    public:
+    UserMatrix(float** entries, int dimM, int dimN): 
+    matrix(entries), m(dimM), n(dimN){};
+    UserMatrix(){};
+
+    float** getEntries(){return matrix;};
+    int getM(){return m;};
+    int getN(){return n;};
+};
+
+void print_matrix(std::map<std::string, UserMatrix> matrices, string key){
+    UserMatrix user = matrices[key];
+    float** matrix = user.getEntries();
+    int m = user.getM();
+    int n = user.getN();
+
     for (int i = 0; i < m; ++i) {
         for (int j = 0; j < n; ++j) {
             cout << matrix[i][j] << " ";
@@ -15,35 +34,50 @@ void print_matrix(float** matrix,int m,int n){
     }
 }
 
-void print_col(float** matrix, int m, int n){
+void print_col(map<string, UserMatrix> matrices, string key, int col){
+    UserMatrix user = matrices[key];
+    float** matrix = user.getEntries();
+    int m = user.getM();
+
     cout << '[';
     for (int i = 0; i < m; ++i) {
         if(i == m-1){
-            cout << matrix[i][n];
+            cout << matrix[i][col];
             break;
         }
-        cout << matrix[i][n] << ", ";
+        cout << matrix[i][col] << ", ";
     }
     cout << ']' << endl;
 }
 
-void print_row(float** matrix, int m, int n){
+void print_row(map<string, UserMatrix> matrices, string key, int row){
+    UserMatrix user = matrices[key];
+    float** matrix = user.getEntries();
+    int n = user.getN();
+
     cout << '[';
     for (int i = 0; i < n; ++i) {
         if(i == n-1){
-            cout << matrix[m][i];
+            cout << matrix[row][i];
             break;
         }
-        cout << matrix[m][i] << ", ";
+        cout << matrix[row][i] << ", ";
     }
     cout << ']' << endl;
 }
 
-void print_entry(float** matrix, int m, int n){
+void print_entry(map<string, UserMatrix> matrices, string key, int m, int n){
+    UserMatrix user = matrices[key];
+    float** matrix = user.getEntries();
+
     cout << matrix[m][n] << endl;
 }
 
-void free_matrix(float** matrix, int m) {
+void free_matrix(map<string, UserMatrix> matrices, string key) {
+    UserMatrix user = matrices[key];
+    float** matrix = user.getEntries();
+    int m = user.getM();
+
     // Free each row first
     for (int i = 0; i < m; i++) {
         delete[] matrix[i];
@@ -52,7 +86,7 @@ void free_matrix(float** matrix, int m) {
     delete[] matrix;
 }
 
-float** parse_input(string in, int m, int n){
+UserMatrix parse_input(string in, int m, int n){
 /**
  * This function will be called to read user input for a matrix/vector
     Would like user input to look as such:
@@ -115,9 +149,8 @@ float** parse_input(string in, int m, int n){
         }
     }
 
-    // print_matrix(matrix, m, n);
-    return matrix;
-    // free_matrix(matrix, m);
+    UserMatrix user = UserMatrix(matrix, m, n);
+    return user;
 }
 
 void swap_row(float** matrix, int swap, int pivot, int n){
@@ -177,7 +210,7 @@ void eliminate_nonpivots(float **matrix, int pivCol, int pivRow, int m, int n){
    }
 }
 
-void row_reduction(float **matrix, int m, int n){
+void row_reduction(map<string, UserMatrix> matrices, string key){
     /**
      * Row reduction algorithm:
      *  1) Iterate through columns -- row-wise (look at 1 column at a time)
@@ -189,6 +222,11 @@ void row_reduction(float **matrix, int m, int n){
      *  5) Go to next column, repeat from step 1
      * Helper Functions: swap_row(), subtract_row(), scale_row()
     */
+   UserMatrix user = matrices[key];
+   float** matrix = user.getEntries();
+   int m = user.getM();
+   int n = user.getN();
+
    int pvtRow = 0;
    int pvtCol = 0;
    int i = 0;
@@ -215,7 +253,7 @@ void row_reduction(float **matrix, int m, int n){
 
 int main(){
     string input;
-    map <string, float**> matrices;
+    map <std::string, UserMatrix> matrices;
     int m;
     int n;
     string name;
@@ -231,18 +269,15 @@ int main(){
     cout << "Please enter a matrix: ";
     getline(cin, input);
 
-    float** matrix1 = parse_input(input, m, n);
+    UserMatrix matrix1 = parse_input(input, m, n);
+    // UserMatrix entry(matrix1, m, n);
     matrices[name] = matrix1;
-    print_matrix(matrices[name], m, n);
+    print_matrix(matrices, name);
     cout << "\n";
 
-    // swap_row(matrix1, 1, 2, n);
-    // print_matrix(matrices[name], m, n);
-    // scale_row(matrix1, 0, 0.1,n);
-    // eliminate_nonpivots(matrices[name], 0,0,m,n);
-    row_reduction(matrices[name], m, n);
-    print_matrix(matrices[name], m, n);
-    free_matrix(matrices[name], m);
+    row_reduction(matrices, name);
+    print_matrix(matrices, name);
+    free_matrix(matrices, name);
 
     // fscanf(stdin, "c"); //Used for debugging with leaks.
 
