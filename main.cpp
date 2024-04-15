@@ -18,73 +18,53 @@ class UserMatrix{
     float** getEntries(){return matrix;};
     int getM(){return m;};
     int getN(){return n;};
-};
 
-void print_matrix(std::map<std::string, UserMatrix> matrices, string key){
-    UserMatrix user = matrices[key];
-    float** matrix = user.getEntries();
-    int m = user.getM();
-    int n = user.getN();
-
-    for (int i = 0; i < m; ++i) {
-        for (int j = 0; j < n; ++j) {
-            cout << matrix[i][j] << " ";
-        }
+    void print_matrix(){
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                cout << matrix[i][j] << " ";
+            }
         cout << endl;
+        }
     }
-}
 
-void print_col(map<string, UserMatrix> matrices, string key, int col){
-    UserMatrix user = matrices[key];
-    float** matrix = user.getEntries();
-    int m = user.getM();
-
-    cout << '[';
-    for (int i = 0; i < m; ++i) {
-        if(i == m-1){
-            cout << matrix[i][col];
-            break;
+    void print_col(int col){
+        cout << '[';
+        for (int i = 0; i < m; ++i) {
+            if(i == m-1){
+                cout << matrix[i][col];
+                break;
         }
         cout << matrix[i][col] << ", ";
-    }
-    cout << ']' << endl;
-}
-
-void print_row(map<string, UserMatrix> matrices, string key, int row){
-    UserMatrix user = matrices[key];
-    float** matrix = user.getEntries();
-    int n = user.getN();
-
-    cout << '[';
-    for (int i = 0; i < n; ++i) {
-        if(i == n-1){
-            cout << matrix[row][i];
-            break;
         }
-        cout << matrix[row][i] << ", ";
+        cout << ']' << endl;
     }
-    cout << ']' << endl;
-}
 
-void print_entry(map<string, UserMatrix> matrices, string key, int m, int n){
-    UserMatrix user = matrices[key];
-    float** matrix = user.getEntries();
-
-    cout << matrix[m][n] << endl;
-}
-
-void free_matrix(map<string, UserMatrix> matrices, string key) {
-    UserMatrix user = matrices[key];
-    float** matrix = user.getEntries();
-    int m = user.getM();
-
-    // Free each row first
-    for (int i = 0; i < m; i++) {
-        delete[] matrix[i];
+    void print_row(int row){
+        cout << '[';
+        for (int i = 0; i < n; ++i) {
+            if(i == n-1){
+                cout << matrix[row][i];
+                break;
+            }
+            cout << matrix[row][i] << ", ";
+        }
+        cout << ']' << endl;
     }
-    // Free the array of pointers
-    delete[] matrix;
-}
+
+    void print_entry(int m, int n){
+        cout << matrix[m][n] << endl;
+    }
+
+    void free_matrix(){
+        // Free each row first
+        for (int i = 0; i < m; i++) {
+            delete[] matrix[i];
+        }
+        // Free the array of pointers
+        delete[] matrix;
+    }
+};
 
 UserMatrix parse_input(string in, int m, int n){
 /**
@@ -272,12 +252,12 @@ int main(){
     UserMatrix matrix1 = parse_input(input, m, n);
     // UserMatrix entry(matrix1, m, n);
     matrices[name] = matrix1;
-    print_matrix(matrices, name);
+    matrices[name].print_matrix();
     cout << "\n";
 
     row_reduction(matrices, name);
-    print_matrix(matrices, name);
-    free_matrix(matrices, name);
+    matrices[name].print_matrix();
+    matrices[name].free_matrix();
 
     // fscanf(stdin, "c"); //Used for debugging with leaks.
 
