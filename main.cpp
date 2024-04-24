@@ -4,6 +4,7 @@
 #include <map>
 #include <cmath>
 #include <stdlib.h>
+#include <cassert>
 using namespace std;
 
 float** parse_input(string in, int m, int n);
@@ -21,7 +22,10 @@ class UserMatrix{
     int getM(){return m;};
     int getN(){return n;};
 
-    void setEntries(string in){
+    void setEntries(float*** newEntries){
+        entries = *newEntries;
+    }
+    void parseEntries(string in){
         entries = parse_input(in, m, n);
     }
     void setM(int mDim){m = mDim;};
@@ -257,7 +261,7 @@ void input_matrix(map<string, UserMatrix*> &matrices){
     UserMatrix* matrix= new UserMatrix;
     matrix->setM(m);
     matrix->setN(n);
-    matrix->setEntries(input);
+    matrix->parseEntries(input);
     matrices[name] = matrix;
     (*matrices[name]).print_matrix();
     cout << '\n';
@@ -269,8 +273,8 @@ int main(){
     string key;
     input_matrix(matrices);
     do{
-        cout << "What action would you like to perform\n1: row-reduction\t";
-        cout << "2: matrix multiplication\t3: exit\n";
+        cout << "What action would you like to perform\n1: row-reduction   ";
+        cout << "2: print matrix   3: insert another matrix   4: exit\n";
         cin >> choice;
         switch(choice){
             case '1':
@@ -280,18 +284,23 @@ int main(){
                 (*matrices[key]).print_matrix();
                 break;
             case '2':
+                cout << "Enter the name of the matrix: ";
+                cin >> key;
+                (*matrices[key]).print_matrix();
+                // cout << "[0][0] " << (*matrices[key]).getEntries()[0][0] << "\n";
+                // cout << "[0][1] " << (*matrices[key]).getEntries()[0][1] << "\n";
+                // cout << "[1][0] " << (*matrices[key]).getEntries()[1][0] << "\n";
                 break;
             case '3':
+                input_matrix(matrices);
+            case '4':
                 break;
         }
 
-    } while(choice != '3');
+    } while(choice != '4');
 
-    
-
-    // row_reduction(matrices, name);
-    // matrices[name].print_matrix();
-    // matrices[name].free_matrix();
+    for (auto i = matrices.begin(); i != matrices.end(); i++)
+        i->second->free_matrix();
 
     // fscanf(stdin, "c"); //Used for debugging with leaks.
 
