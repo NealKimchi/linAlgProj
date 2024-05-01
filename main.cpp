@@ -22,8 +22,8 @@ class UserMatrix{
     int getM(){return m;};
     int getN(){return n;};
 
-    void setEntries(float*** newEntries){
-        entries = *newEntries;
+    void setEntries(float** newEntries){
+        entries = newEntries;
     }
     void parseEntries(string in){
         entries = parse_input(in, m, n);
@@ -31,6 +31,9 @@ class UserMatrix{
     void setM(int mDim){m = mDim;};
     void setN(int nDim){n = nDim;};
 
+    void setEntry(int i, int j, float val){
+        entries[i][j] = val;
+    }
 
     void print_matrix(){
         for (int i = 0; i < m; ++i) {
@@ -267,37 +270,80 @@ void input_matrix(map<string, UserMatrix*> &matrices){
     cout << '\n';
 }
 
+void matrix_multiplication(map<string, UserMatrix*> &matrices, string key1, string key2, string key3){
+    assert(matrices[key1]->getN() == matrices[key2]->getN() && "Dimensions do not match");
+
+    UserMatrix* newMatrix = new UserMatrix;
+    int mDim = matrices[key1]->getM();
+    int nDim = matrices[key2]->getN();
+    newMatrix->setM(mDim);
+    newMatrix->setN(nDim);
+    float** entries = new float*[mDim];
+    for (int i = 0; i < mDim; i++) {
+        entries[i] = new float[nDim];
+    }
+    newMatrix->setEntries(entries);
+    float** matrix1 = matrices[key1]->getEntries();
+    float** matrix2 = matrices[key2]->getEntries();
+
+
+    int klim = matrices[key1]->getN();
+    for(int i = 0; i < mDim; i++){
+        for(int j = 0; j < nDim;j++){
+            float acc = 0;
+            for(int k = 0; k < klim; k++){
+                acc += matrix1[i][k] * matrix2[k][j];
+            }
+            newMatrix->setEntry(i, j, acc);
+        }
+    }
+    matrices[key3] = newMatrix;
+}
+
 int main(){
     map<string, UserMatrix*> matrices;
     char choice;
-    string key;
+    string key1;
+    string key2;
+    string key3;
     input_matrix(matrices);
     do{
         cout << "What action would you like to perform\n1: row-reduction   ";
-        cout << "2: print matrix   3: insert another matrix   4: exit\n";
+        cout << "2: print matrix   3: insert another matrix   4: matrix multiplication   5: exit\n";
         cin >> choice;
         switch(choice){
             case '1':
                 cout << "Enter the name of the matrix: ";
-                cin >> key;
-                row_reduction(matrices, key);
-                (*matrices[key]).print_matrix();
+                cin >> key1;
+                row_reduction(matrices, key1);
+                (*matrices[key1]).print_matrix();
                 break;
             case '2':
                 cout << "Enter the name of the matrix: ";
-                cin >> key;
-                (*matrices[key]).print_matrix();
+                cin >> key1;
+                (*matrices[key1]).print_matrix();
                 // cout << "[0][0] " << (*matrices[key]).getEntries()[0][0] << "\n";
                 // cout << "[0][1] " << (*matrices[key]).getEntries()[0][1] << "\n";
                 // cout << "[1][0] " << (*matrices[key]).getEntries()[1][0] << "\n";
                 break;
             case '3':
                 input_matrix(matrices);
+                break;
             case '4':
+                cout << "Enter the name of the first matrix: ";
+                cin >> key1;
+                cout << "Enter the name of the second matrix: ";
+                cin >> key2;
+                cout << "Enter the name of the new matrix: ";
+                cin >> key3;
+                matrix_multiplication(matrices, key1, key2, key3);
+                (*matrices[key3]).print_matrix();
+                break;
+            case '5':
                 break;
         }
 
-    } while(choice != '4');
+    } while(choice != '5');
 
     for (auto i = matrices.begin(); i != matrices.end(); i++)
         i->second->free_matrix();
