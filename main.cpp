@@ -82,6 +82,33 @@ class UserMatrix{
     }
 };
 
+
+void transpose(map<string, UserMatrix*> &matrices, string key, string key2){
+    /**
+     * The matrix transpose function will take in the dictionary containing all
+     * the matrices, and the key of the matrix we are transposing. Currently I have
+     * not decided whether I will create a new matrix with the name 'key'_transpose
+     * or just override the UserMatrix object in the dictionary with its transpose.
+    */
+    int ogM = matrices[key]->getM();
+    int ogN = matrices[key]->getN();
+    
+
+    float** transpose = new float*[ogN];
+    for(int i = 0; i < ogN; i++){
+       transpose[i] = new float[ogM]; 
+    }
+
+    float** og_entries = matrices[key]->getEntries();
+    for(int i = 0; i < ogM; i++){
+        for(int j = 0; j < ogN; j++){
+            transpose[j][i] = og_entries[i][j];
+        }
+    }
+    UserMatrix* transposeMatrix = new UserMatrix(transpose, ogN, ogM);
+    matrices[key2] = transposeMatrix; 
+}
+
 float** parse_input(string in, int m, int n){
 /**
  * This function will be called to read user input for a matrix/vector
@@ -99,7 +126,7 @@ float** parse_input(string in, int m, int n){
         matrix[i] = new float[n];
     }
 
-    int index = 0, rindex = 0, cindex = 0, decVal = 1, isDec = 0, isNeg = 0; 
+    int rindex = 0, cindex = 0, decVal = 1, isDec = 0, isNeg = 0; 
     float decAcc = 0, acc = 0;
     
     for(int i = 0; i < length; i++){
@@ -271,7 +298,7 @@ void input_matrix(map<string, UserMatrix*> &matrices){
 }
 
 void matrix_multiplication(map<string, UserMatrix*> &matrices, string key1, string key2, string key3){
-    assert(matrices[key1]->getN() == matrices[key2]->getN() && "Dimensions do not match");
+    assert(matrices[key1]->getN() == matrices[key2]->getM() && "Dimensions do not match");
 
     UserMatrix* newMatrix = new UserMatrix;
     int mDim = matrices[key1]->getM();
@@ -309,7 +336,7 @@ int main(){
     input_matrix(matrices);
     do{
         cout << "What action would you like to perform\n1: row-reduction   ";
-        cout << "2: print matrix   3: insert another matrix   4: matrix multiplication   5: exit\n";
+        cout << "2: print matrix   3: insert another matrix   4: matrix multiplication   5: transpose   6: exit";
         cin >> choice;
         switch(choice){
             case '1':
@@ -340,10 +367,18 @@ int main(){
                 (*matrices[key3]).print_matrix();
                 break;
             case '5':
+                cout << "Enter the name of the matrix to transpose: ";
+                cin >> key1;
+                cout << "Enter the name for the new matrix: ";
+                cin >> key2;
+                transpose(matrices, key1, key2);
+                (*matrices[key2]).print_matrix();
+                break;
+            case '6':
                 break;
         }
 
-    } while(choice != '5');
+    } while(choice != '6');
 
     for (auto i = matrices.begin(); i != matrices.end(); i++)
         i->second->free_matrix();
