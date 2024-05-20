@@ -6,9 +6,7 @@ I originally wanted the practice of using pointers, learning C++. Ultimately thi
 to Wolfram Alpha or Octave. 
 
 ##TO-DO
- Parse input string  convert to an array
- Create UserMatrix object
+- [x] Parse input string -> convert to array
+- [x] Create UserMatrix object
     - holds the array (entries)
-    - dimensions of array (m,n)
-
-
+    - dimensions of the array (m,n)
