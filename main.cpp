@@ -83,7 +83,7 @@ class UserMatrix{
 };
 
 
-void transpose(map<string, UserMatrix*> matrices, string key, string key2){
+void transpose(map<string, UserMatrix*> &matrices, string key, string key2){
     /**
      * The matrix transpose function will take in the dictionary containing all
      * the matrices, and the key of the matrix we are transposing. Currently I have
