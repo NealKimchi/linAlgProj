@@ -14,4 +14,28 @@ to Wolfram Alpha or Octave.
     - [x] eliminate nonpivots
     - [ ] row reduced echelon form
 - [x] Matrix Multiplication
-    - [x] O(n<sup>3</sup>)
+    - [x] O(n<sup>3</sup>) Algorithm
+    - [ ] **Faster algorithms!!**
+- [x] Transpose
+- [ ] Modularize repo
+    - Separate main.cpp into smaller files
+    - Create a MakeFile to compile
+- [ ] Determinant
+- [ ] Inverse of Matrix
+- [ ] Eigen
+    - [ ] Eigenvalue calculation
+    - [ ] Eigenvector/Eigenspace calculation
+    - [ ] Complex Eigenvalues??
+- [ ] Diagonlization
+    - [ ] PDP<sup>-1</sup>
+- [ ] Orthogonality
+    - [ ] Col Spaces
+    - [ ] Null Spaces
+    - [ ] Orthogonal projections
+    - [ ] Orthogonal matrices
+        - [ ] Unitary Matrix
+- [ ] Gram-Schmidt
+- [ ] Least-Squares
+- [ ] Spectral Theorem
+- [ ] Singular Value Decomposition
+    - [ ] Moore-Penrose psuedo inverse
