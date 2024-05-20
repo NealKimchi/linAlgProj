@@ -83,7 +83,7 @@ class UserMatrix{
 };
 
 
-void transpose(map<string, UserMatrix*> matrices, string key){
+void transpose(map<string, UserMatrix*> matrices, string key, string key2){
     /**
      * The matrix transpose function will take in the dictionary containing all
      * the matrices, and the key of the matrix we are transposing. Currently I have
@@ -93,6 +93,7 @@ void transpose(map<string, UserMatrix*> matrices, string key){
     int ogM = matrices[key]->getM();
     int ogN = matrices[key]->getN();
     
+
     float** transpose = new float*[ogN];
     for(int i = 0; i < ogN; i++){
        transpose[i] = new float[ogM]; 
@@ -104,11 +105,8 @@ void transpose(map<string, UserMatrix*> matrices, string key){
             transpose[j][i] = og_entries[i][j];
         }
     }
-    UserMatrix* transposeMatrix = new UserMatrix;
-    transposeMatrix->setM(ogN);
-    transposeMatrix->setN(ogM);
-    transposeMatrix->setEntries(transpose);
-    matrices[key + "_trans"] = transposeMatrix; 
+    UserMatrix* transposeMatrix = new UserMatrix(transpose, ogN, ogM);
+    matrices[key2] = transposeMatrix; 
 }
 
 float** parse_input(string in, int m, int n){
@@ -369,10 +367,12 @@ int main(){
                 (*matrices[key3]).print_matrix();
                 break;
             case '5':
-                cout << "Enter the name of the matrix to transpose";
+                cout << "Enter the name of the matrix to transpose: ";
                 cin >> key1;
-//                (*matrices[key1]).transpose();
-                (*matrices[key1]).print_matrix();
+                cout << "Enter the name for the new matrix: ";
+                cin >> key2;
+                transpose(matrices, key1, key2);
+                (*matrices[key2]).print_matrix();
                 break;
             case '6':
                 break;
