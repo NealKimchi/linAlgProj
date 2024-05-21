@@ -6,7 +6,7 @@ I originally wanted the practice of using pointers, learning C++. Ultimately thi
 to Wolfram Alpha or Octave. 
 
 ## Table of Contents
-    1. [To-do](##TO-DO)
+1. [To-do](##TO-DO)
 ## TO-DO
 - [x] Parse input string -> convert to array
 - [x] Create UserMatrix object
