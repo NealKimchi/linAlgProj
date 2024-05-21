@@ -5,6 +5,8 @@ perform almost all the operations I learned during my two Linear Algebra courses
 I originally wanted the practice of using pointers, learning C++. Ultimately this project could turn into a website similar
 to Wolfram Alpha or Octave. 
 
+## Table of Contents
+    1. [To-do](##TO-DO)
 ## TO-DO
 - [x] Parse input string -> convert to array
 - [x] Create UserMatrix object
@@ -39,3 +41,8 @@ to Wolfram Alpha or Octave.
 - [ ] Spectral Theorem
 - [ ] Singular Value Decomposition
     - [ ] Moore-Penrose psuedo inverse
+
+### 1) Parsing input
+The parsing input function is the main driver of the application. The use will input a name, dimensions, and ssv (space separated values). The parser will then read in the string char by char and create the matrix. It checks for negative numbers and decimals as well, and adjusts the input number accordingly. The parser also keeps an index counter going that way it can dynamically produce the 2D matrix with the dimensions already in place. This may cause the algorithm to be slower.
+
+
