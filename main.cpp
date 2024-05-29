@@ -269,7 +269,7 @@ void row_reduction(map<string, UserMatrix*> matrices, string key){
                 pvtCol++;
                 break;
             }
-        }   
+        }
    }
 }
 
